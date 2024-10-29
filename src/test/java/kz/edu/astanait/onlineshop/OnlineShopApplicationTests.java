@@ -1,4 +1,4 @@
-package kz.edu.astanait.online_shop;
+package kz.edu.astanait.onlineshop;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
