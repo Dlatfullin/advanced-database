@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: online-shop
+  data:
+    mongodb:
+      uri: mongodb://mongodb:mongodb@localhost:27017
+      database: shop
