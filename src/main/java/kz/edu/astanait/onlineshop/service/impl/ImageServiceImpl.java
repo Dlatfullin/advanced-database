@@ -1,6 +1,7 @@
 package kz.edu.astanait.onlineshop.service.impl;
 
 import kz.edu.astanait.onlineshop.document.ProductDocument;
+import kz.edu.astanait.onlineshop.exception.ImageUploadException;
 import kz.edu.astanait.onlineshop.exception.ResourceNotFoundException;
 import kz.edu.astanait.onlineshop.repository.ProductRepository;
 import kz.edu.astanait.onlineshop.service.ImageService;
@@ -21,12 +22,13 @@ public class ImageServiceImpl implements ImageService {
         try {
             String imageBase64 = Base64.getEncoder().encodeToString(file.getBytes());
 
-            ProductDocument productDocument = productRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
+            ProductDocument productDocument = productRepository.findById(id)
+                    .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
             productDocument.setImage(imageBase64);
 
             productRepository.save(productDocument);
         } catch (IOException e) {
-            throw new ResourceNotFoundException(e.getMessage());
+            throw new ImageUploadException("Image upload failed", e);
         }
     }
 

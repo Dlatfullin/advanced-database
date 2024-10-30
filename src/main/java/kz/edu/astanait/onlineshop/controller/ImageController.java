@@ -16,7 +16,7 @@ public class ImageController {
     private final ImageService imageService;
 
     @Operation(summary = "Upload image into product by id")
-    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadImage(@PathVariable("id") String id,
                                             @RequestParam("file") MultipartFile file) {
         imageService.uploadImage(id,file);

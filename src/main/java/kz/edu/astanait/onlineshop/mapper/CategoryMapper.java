@@ -6,7 +6,7 @@ import kz.edu.astanait.onlineshop.domain.CategoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -14,14 +14,25 @@ public class CategoryMapper {
 
     private final ProductMapper productMapper;
 
+
     public CategoryResponse mapToCategoryResponse(final CategoryDocument categoryDocument) {
         return new CategoryResponse(categoryDocument.getId(), categoryDocument.getName(),
-                categoryDocument.getProducts().stream().map(productMapper::mapToProduct).collect(Collectors.toList()));
+                productMapper.mapToProductResponseList(categoryDocument.getProducts()));
     }
 
     public CategoryDocument mapToCategoryDocument(final CategorySaveRequest categorySaveRequest) {
         CategoryDocument categoryDocument = new CategoryDocument();
         categoryDocument.setName(categorySaveRequest.name());
         return categoryDocument;
+    }
+
+    public void mapToCategoryDocument(final CategorySaveRequest request, final CategoryDocument document) {
+        document.setName(request.name());
+    }
+
+    public List<CategoryResponse> mapToCategoryResponseList(final List<CategoryDocument> categoryDocuments) {
+        return categoryDocuments.stream()
+                .map(this::mapToCategoryResponse)
+                .toList();
     }
 }

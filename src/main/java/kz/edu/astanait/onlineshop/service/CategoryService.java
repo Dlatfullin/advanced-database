@@ -2,7 +2,6 @@ package kz.edu.astanait.onlineshop.service;
 
 import kz.edu.astanait.onlineshop.domain.CategorySaveRequest;
 import kz.edu.astanait.onlineshop.domain.CategoryResponse;
-import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
 
 import java.util.List;
 
@@ -16,6 +15,4 @@ public interface CategoryService {
     void updateCategory(String id, CategorySaveRequest categorySaveRequest);
 
     void deleteCategory(String id);
-
-    void addProducts(String categoryId, ProductSaveRequest productSaveRequest);
 }

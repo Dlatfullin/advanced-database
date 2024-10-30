@@ -7,6 +7,8 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -24,7 +26,7 @@ public class ProductDocument {
     private String description;
     @NotNull(message = "Price cannot be null")
     @PositiveOrZero(message = "Price must be zero or a positive value")
-    private Double price;
-    private Boolean deleted = false;
+    private BigDecimal price;
+    private boolean deleted;
     private String image;
 }

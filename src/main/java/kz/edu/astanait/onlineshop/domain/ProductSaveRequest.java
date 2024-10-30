@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
+
 public record ProductSaveRequest(@NotNull(message = "Title cannot be null")
                                  @Size(min = 3, message = "Title must be more than 3 characters")
                                  String title,
@@ -11,5 +13,7 @@ public record ProductSaveRequest(@NotNull(message = "Title cannot be null")
                                  String description,
                                  @NotNull(message = "Price cannot be null")
                                  @PositiveOrZero(message = "Price must be zero or a positive value")
-                                 Double price) {
+                                 BigDecimal price,
+                                 @NotNull(message = "product can't exist with out category")
+                                 String categoryId) {
 }
