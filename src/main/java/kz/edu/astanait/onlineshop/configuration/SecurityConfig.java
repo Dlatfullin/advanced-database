@@ -37,7 +37,7 @@ public class SecurityConfig {
                     .requestMatchers(
                                    "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                    "/v1/users/register", "/v1/users/login", "/v1/users/verify",
-                            "/v1/images/**", "/v1/products/**", "/v1/categories/**"
+                                   "/v1/images/**", "/v1/products/**", "/v1/categories/**"          
                 )
                 .permitAll()
                 .anyRequest().fullyAuthenticated())
