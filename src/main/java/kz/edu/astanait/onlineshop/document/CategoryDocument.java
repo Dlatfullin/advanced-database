@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,5 +25,5 @@ public class CategoryDocument {
     @NotNull(message = "Name cannot be null")
     @Size(min = 3, message = "Name must be at least 3 characters long")
     private String name;
-    private List<ProductDocument> products;
+    private List<ProductDocument> products = new ArrayList<>();
 }

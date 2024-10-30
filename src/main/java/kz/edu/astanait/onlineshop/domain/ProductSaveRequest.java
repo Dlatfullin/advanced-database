@@ -11,7 +11,5 @@ public record ProductSaveRequest(@NotNull(message = "Title cannot be null")
                                  String description,
                                  @NotNull(message = "Price cannot be null")
                                  @PositiveOrZero(message = "Price must be zero or a positive value")
-                                 Double price,
-                                 @NotNull(message = "Deleted status cannot be null")
-                                 Boolean deleted) {
+                                 Double price) {
 }

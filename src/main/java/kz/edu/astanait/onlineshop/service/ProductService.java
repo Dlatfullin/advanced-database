@@ -10,8 +10,6 @@ public interface ProductService {
 
     ProductResponse getProductById(String id);
 
-    void createProduct(ProductSaveRequest productSaveRequest);
-
     void updateProduct(String id, ProductSaveRequest productSaveRequest);
 
     void deleteProduct(String id);

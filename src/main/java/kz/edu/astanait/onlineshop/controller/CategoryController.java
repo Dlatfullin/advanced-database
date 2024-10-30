@@ -3,6 +3,7 @@ package kz.edu.astanait.onlineshop.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import kz.edu.astanait.onlineshop.domain.CategoryResponse;
 import kz.edu.astanait.onlineshop.domain.CategorySaveRequest;
+import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
 import kz.edu.astanait.onlineshop.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/category")
+@RequestMapping("/v1/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 
@@ -35,6 +36,13 @@ public class CategoryController {
     public ResponseEntity<CategorySaveRequest> createCategory(@RequestBody CategorySaveRequest categorySaveRequest) {
         categoryService.createCategory(categorySaveRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(categorySaveRequest);
+    }
+
+    @Operation(summary = "Add product into category")
+    @PostMapping("/{id}/products")
+    public ResponseEntity<HttpStatus> addProductToCategory(@PathVariable String id, @RequestBody ProductSaveRequest productSaveRequest) {
+        categoryService.addProducts(id, productSaveRequest);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Operation(summary = "Edit category by id")

@@ -18,8 +18,6 @@ public class ProductMapper {
         productDocument.setTitle(productSaveRequest.title());
         productDocument.setDescription(productSaveRequest.description());
         productDocument.setPrice(productSaveRequest.price());
-        productDocument.setDeleted(productSaveRequest.deleted());
-//        productDocument.setImage(productResponse.image());
         return productDocument;
     }
 }

@@ -31,11 +31,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void createProduct(ProductSaveRequest productSaveRequest) {
-        productRepository.save(productMapper.mapToProductDocument(productSaveRequest));
-    }
-
-    @Override
     public void updateProduct(String id, ProductSaveRequest productSaveRequest) {
         ProductDocument productDocument = productRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
         ProductDocument updatedProductDocument = productMapper.mapToProductDocument(productSaveRequest);
@@ -53,5 +48,6 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(String id) {
         ProductDocument productDocument = productRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
         productDocument.setDeleted(true);
+        productRepository.save(productDocument);
     }
 }

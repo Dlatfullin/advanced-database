@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/product")
+@RequestMapping("/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -28,13 +28,6 @@ public class ProductController {
     @GetMapping("/{id}")
     public ProductResponse getProductById(@PathVariable String id) {
         return productService.getProductById(id);
-    }
-
-    @Operation(summary = "Add product")
-    @PostMapping
-    public ResponseEntity<ProductSaveRequest> createProduct(@RequestBody ProductSaveRequest productSaveRequest) {
-        productService.createProduct(productSaveRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(productSaveRequest);
     }
 
     @Operation(summary = "Edit product")

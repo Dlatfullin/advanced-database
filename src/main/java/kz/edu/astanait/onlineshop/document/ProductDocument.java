@@ -25,7 +25,6 @@ public class ProductDocument {
     @NotNull(message = "Price cannot be null")
     @PositiveOrZero(message = "Price must be zero or a positive value")
     private Double price;
-    @NotNull(message = "Deleted status cannot be null")
-    private Boolean deleted;
+    private Boolean deleted = false;
     private String image;
 }
