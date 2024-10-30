@@ -3,7 +3,7 @@ package kz.edu.astanait.onlineshop.service.impl;
 import kz.edu.astanait.onlineshop.document.CategoryDocument;
 import kz.edu.astanait.onlineshop.domain.CategorySaveRequest;
 import kz.edu.astanait.onlineshop.domain.CategoryResponse;
-import kz.edu.astanait.onlineshop.exception.CategoryNotFoundException;
+import kz.edu.astanait.onlineshop.exception.ResourceNotFoundException;
 import kz.edu.astanait.onlineshop.mapper.CategoryMapper;
 import kz.edu.astanait.onlineshop.repository.CategoryRepository;
 import kz.edu.astanait.onlineshop.service.CategoryService;
@@ -28,7 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse getCategoryById(String id) {
-        return categoryMapper.mapToCategoryResponse(categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new));
+        return categoryMapper.mapToCategoryResponse(categoryRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.categoryNotFoundById(id)));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void updateCategory(String id, CategorySaveRequest categorySaveRequest) {
-         CategoryDocument category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
+         CategoryDocument category = categoryRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.categoryNotFoundById(id));
          CategoryDocument updatedCategory = categoryMapper.mapToCategoryDocument(categorySaveRequest);
 
          category.setName(updatedCategory.getName());

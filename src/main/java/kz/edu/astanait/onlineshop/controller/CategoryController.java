@@ -1,5 +1,6 @@
 package kz.edu.astanait.onlineshop.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import kz.edu.astanait.onlineshop.domain.CategoryResponse;
 import kz.edu.astanait.onlineshop.domain.CategorySaveRequest;
 import kz.edu.astanait.onlineshop.service.CategoryService;
@@ -17,22 +18,26 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @Operation(summary = "Get all the categories")
     @GetMapping
     public List<CategoryResponse> getCategory() {
         return categoryService.getAllCategories();
     }
 
+    @Operation(summary = "Get categories by id")
     @GetMapping("/{id}")
     public CategoryResponse getCategoryById(@PathVariable String id) {
         return categoryService.getCategoryById(id);
     }
 
+    @Operation(summary = "Add new category")
     @PostMapping
     public ResponseEntity<CategorySaveRequest> createCategory(@RequestBody CategorySaveRequest categorySaveRequest) {
         categoryService.createCategory(categorySaveRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(categorySaveRequest);
     }
 
+    @Operation(summary = "Edit category by id")
     @PatchMapping("/{id}")
     public ResponseEntity<CategorySaveRequest> updateCategory(@PathVariable String id,
             @RequestBody CategorySaveRequest categorySaveRequest) {
@@ -40,6 +45,7 @@ public class CategoryController {
         return ResponseEntity.ok(categorySaveRequest);
     }
 
+    @Operation(summary = "Delete category by id")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable String id) {
         categoryService.deleteCategory(id);

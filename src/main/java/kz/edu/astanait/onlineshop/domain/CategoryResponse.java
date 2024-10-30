@@ -5,6 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record CategoryResponse(String name,
-                               List<Product> product) {
+public record CategoryResponse(String id,
+                               String name,
+                               List<ProductResponse> productResponse) {
 }

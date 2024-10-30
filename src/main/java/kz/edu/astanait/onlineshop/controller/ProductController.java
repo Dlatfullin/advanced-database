@@ -1,6 +1,8 @@
 package kz.edu.astanait.onlineshop.controller;
 
-import kz.edu.astanait.onlineshop.domain.Product;
+import io.swagger.v3.oas.annotations.Operation;
+import kz.edu.astanait.onlineshop.domain.ProductResponse;
+import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
 import kz.edu.astanait.onlineshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,28 +18,33 @@ public class ProductController {
 
     private final ProductService productService;
 
+    @Operation(summary = "Get all the products")
     @GetMapping
-    public List<Product> getAllProducts() {
+    public List<ProductResponse> getAllProducts() {
         return productService.getAllProducts();
     }
 
+    @Operation(summary = "Get product")
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable String id) {
+    public ProductResponse getProductById(@PathVariable String id) {
         return productService.getProductById(id);
     }
 
+    @Operation(summary = "Add product")
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        productService.createProduct(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(product);
+    public ResponseEntity<ProductSaveRequest> createProduct(@RequestBody ProductSaveRequest productSaveRequest) {
+        productService.createProduct(productSaveRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productSaveRequest);
     }
 
+    @Operation(summary = "Edit product")
     @PatchMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable String id, @RequestBody Product product) {
-        productService.updateProduct(id, product);
-        return ResponseEntity.ok(product);
+    public ResponseEntity<ProductSaveRequest> updateProduct(@PathVariable String id, @RequestBody ProductSaveRequest productSaveRequest) {
+        productService.updateProduct(id, productSaveRequest);
+        return ResponseEntity.ok(productSaveRequest);
     }
 
+    @Operation(summary = "Mark product as deleted")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
         productService.deleteProduct(id);

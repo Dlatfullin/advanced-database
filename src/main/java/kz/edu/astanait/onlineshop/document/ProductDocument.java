@@ -1,7 +1,9 @@
 package kz.edu.astanait.onlineshop.document;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,14 +12,20 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collation = "products")
+@Document("products")
 public class ProductDocument {
 
     @Id
     private String id;
+    @NotNull(message = "Title cannot be null")
+    @Size(min = 3, message = "Title must be more than 3 characters")
     private String title;
+    @Size(max = 500, message = "Description must be less than 500 characters")
     private String description;
+    @NotNull(message = "Price cannot be null")
+    @PositiveOrZero(message = "Price must be zero or a positive value")
     private Double price;
+    @NotNull(message = "Deleted status cannot be null")
     private Boolean deleted;
-    private Binary image;
+    private String image;
 }

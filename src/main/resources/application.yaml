@@ -3,5 +3,16 @@ spring:
     name: online-shop
   data:
     mongodb:
-      uri: mongodb://mongodb:mongodb@localhost:27017
-      database: shop
+      uri: mongodb://localhost:27017/shop
+  security:
+    token:
+      expire-after: 30d
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG

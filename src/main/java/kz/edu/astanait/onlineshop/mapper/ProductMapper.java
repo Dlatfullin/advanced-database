@@ -1,23 +1,25 @@
 package kz.edu.astanait.onlineshop.mapper;
 
 import kz.edu.astanait.onlineshop.document.ProductDocument;
-import kz.edu.astanait.onlineshop.domain.Product;
+import kz.edu.astanait.onlineshop.domain.ProductResponse;
+import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProductMapper {
 
-    public Product mapToProduct(final ProductDocument productDocument) {
-        return new Product(productDocument.getTitle(), productDocument.getDescription(), productDocument.getPrice(), productDocument.getDeleted(), productDocument.getImage());
+    public ProductResponse mapToProduct(final ProductDocument productDocument) {
+        return new ProductResponse(productDocument.getId(), productDocument.getTitle(), productDocument.getDescription(),
+                productDocument.getPrice(), productDocument.getDeleted());
     }
 
-    public ProductDocument mapToProductDocument(final Product product) {
+    public ProductDocument mapToProductDocument(final ProductSaveRequest productSaveRequest) {
         ProductDocument productDocument = new ProductDocument();
-        productDocument.setTitle(product.title());
-        productDocument.setDescription(product.description());
-        productDocument.setPrice(product.price());
-        productDocument.setDeleted(product.deleted());
-        productDocument.setImage(product.image());
+        productDocument.setTitle(productSaveRequest.title());
+        productDocument.setDescription(productSaveRequest.description());
+        productDocument.setPrice(productSaveRequest.price());
+        productDocument.setDeleted(productSaveRequest.deleted());
+//        productDocument.setImage(productResponse.image());
         return productDocument;
     }
 }

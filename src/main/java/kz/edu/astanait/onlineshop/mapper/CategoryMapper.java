@@ -15,7 +15,7 @@ public class CategoryMapper {
     private final ProductMapper productMapper;
 
     public CategoryResponse mapToCategoryResponse(final CategoryDocument categoryDocument) {
-        return new CategoryResponse(categoryDocument.getName(),
+        return new CategoryResponse(categoryDocument.getId(), categoryDocument.getName(),
                 categoryDocument.getProducts().stream().map(productMapper::mapToProduct).collect(Collectors.toList()));
     }
 

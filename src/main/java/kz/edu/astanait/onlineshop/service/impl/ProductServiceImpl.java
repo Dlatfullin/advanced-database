@@ -1,8 +1,9 @@
 package kz.edu.astanait.onlineshop.service.impl;
 
 import kz.edu.astanait.onlineshop.document.ProductDocument;
-import kz.edu.astanait.onlineshop.domain.Product;
-import kz.edu.astanait.onlineshop.exception.ProductNotFoundException;
+import kz.edu.astanait.onlineshop.domain.ProductResponse;
+import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
+import kz.edu.astanait.onlineshop.exception.ResourceNotFoundException;
 import kz.edu.astanait.onlineshop.mapper.ProductMapper;
 import kz.edu.astanait.onlineshop.repository.ProductRepository;
 import kz.edu.astanait.onlineshop.service.ProductService;
@@ -20,24 +21,24 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
 
     @Override
-    public List<Product> getAllProducts() {
+    public List<ProductResponse> getAllProducts() {
         return productRepository.findAll().stream().map(productMapper::mapToProduct).collect(Collectors.toList());
     }
 
     @Override
-    public Product getProductById(String id) {
-        return productMapper.mapToProduct(productRepository.findById(id).orElseThrow(ProductNotFoundException::new));
+    public ProductResponse getProductById(String id) {
+        return productMapper.mapToProduct(productRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id)));
     }
 
     @Override
-    public void createProduct(Product product) {
-        productRepository.save(productMapper.mapToProductDocument(product));
+    public void createProduct(ProductSaveRequest productSaveRequest) {
+        productRepository.save(productMapper.mapToProductDocument(productSaveRequest));
     }
 
     @Override
-    public void updateProduct(String id, Product product) {
-        ProductDocument productDocument = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
-        ProductDocument updatedProductDocument = productMapper.mapToProductDocument(product);
+    public void updateProduct(String id, ProductSaveRequest productSaveRequest) {
+        ProductDocument productDocument = productRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
+        ProductDocument updatedProductDocument = productMapper.mapToProductDocument(productSaveRequest);
 
         productDocument.setTitle(updatedProductDocument.getTitle());
         productDocument.setDescription(updatedProductDocument.getDescription());
@@ -50,6 +51,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(String id) {
-        productRepository.deleteById(id);
+        ProductDocument productDocument = productRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
+        productDocument.setDeleted(true);
     }
 }

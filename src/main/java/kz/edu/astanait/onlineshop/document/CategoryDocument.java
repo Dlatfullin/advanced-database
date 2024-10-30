@@ -2,6 +2,7 @@ package kz.edu.astanait.onlineshop.document;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,12 +16,13 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "categories")
+@Document("categories")
 public class CategoryDocument {
 
     @Id
     private String id;
-    @NotNull
+    @NotNull(message = "Name cannot be null")
+    @Size(min = 3, message = "Name must be at least 3 characters long")
     private String name;
     private List<ProductDocument> products;
 }

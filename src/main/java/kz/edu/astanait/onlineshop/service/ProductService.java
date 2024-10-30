@@ -1,17 +1,18 @@
 package kz.edu.astanait.onlineshop.service;
 
-import kz.edu.astanait.onlineshop.domain.Product;
+import kz.edu.astanait.onlineshop.domain.ProductResponse;
+import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
 
 import java.util.List;
 
 public interface ProductService {
-    List<Product> getAllProducts();
+    List<ProductResponse> getAllProducts();
 
-    Product getProductById(String id);
+    ProductResponse getProductById(String id);
 
-    void createProduct(Product product);
+    void createProduct(ProductSaveRequest productSaveRequest);
 
-    void updateProduct(String id, Product product);
+    void updateProduct(String id, ProductSaveRequest productSaveRequest);
 
     void deleteProduct(String id);
 }
