@@ -12,11 +12,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryMapper {
 
-    private final ProductMapper productMapper;
-
     public CategoryResponse mapToCategoryResponse(final CategoryDocument categoryDocument) {
-        return new CategoryResponse(categoryDocument.getId(), categoryDocument.getName(),
-                productMapper.mapToCategoryProductResponseList(categoryDocument.getProducts()));
+        return new CategoryResponse(categoryDocument.getId(), categoryDocument.getName());
     }
 
     public CategoryDocument mapToCategoryDocument(final CategorySaveRequest categorySaveRequest) {

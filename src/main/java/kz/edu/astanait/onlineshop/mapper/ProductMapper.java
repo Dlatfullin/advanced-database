@@ -3,7 +3,6 @@ package kz.edu.astanait.onlineshop.mapper;
 import kz.edu.astanait.onlineshop.document.ProductDocument;
 import kz.edu.astanait.onlineshop.domain.ProductAllResponse;
 import kz.edu.astanait.onlineshop.domain.ProductByIdResponse;
-import kz.edu.astanait.onlineshop.domain.CategoryProductResponse;
 import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
@@ -12,10 +11,6 @@ import java.util.List;
 
 @Component
 public class ProductMapper {
-
-    public CategoryProductResponse mapToCategoryProductResponse(final ProductDocument productDocument) {
-        return new CategoryProductResponse(productDocument.getId(), productDocument.getTitle());
-    }
 
     public ProductByIdResponse mapToProductByIdResponse(final ProductDocument productDocument) {
         return new ProductByIdResponse(productDocument.getId(),productDocument.getTitle(), productDocument.getDescription(),
@@ -35,10 +30,6 @@ public class ProductMapper {
         productDocument.setPrice(productSaveRequest.price());
         productDocument.setQuantity(productSaveRequest.quantity());
         return productDocument;
-    }
-
-    public List<CategoryProductResponse> mapToCategoryProductResponseList(final List<ProductDocument> productDocumentList) {
-        return productDocumentList.stream().map(this::mapToCategoryProductResponse).toList();
     }
 
     public List<ProductAllResponse> mapToProductAllResponseList(final List<ProductDocument> productDocumentList) {
