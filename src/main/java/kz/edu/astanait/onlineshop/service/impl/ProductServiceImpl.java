@@ -2,12 +2,13 @@ package kz.edu.astanait.onlineshop.service.impl;
 
 import kz.edu.astanait.onlineshop.document.CategoryDocument;
 import kz.edu.astanait.onlineshop.document.ProductDocument;
-import kz.edu.astanait.onlineshop.domain.ProductResponse;
+import kz.edu.astanait.onlineshop.domain.Pagination;
+import kz.edu.astanait.onlineshop.domain.ProductAllResponse;
+import kz.edu.astanait.onlineshop.domain.ProductByIdResponse;
 import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
 import kz.edu.astanait.onlineshop.exception.ResourceNotFoundException;
 import kz.edu.astanait.onlineshop.mapper.ProductMapper;
 import kz.edu.astanait.onlineshop.repository.CategoryRepository;
-import kz.edu.astanait.onlineshop.repository.ProductRepository;
 import kz.edu.astanait.onlineshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,53 +19,65 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
 
     @Override
-    public List<ProductResponse> getAllProducts() {
-        List<ProductDocument> products = productRepository.findAll();
-        return productMapper.mapToProductResponseList(products);
+    public List<ProductAllResponse> getAllProducts(Pagination pagination) {
+        List<ProductDocument> products = categoryRepository.findAllProducts(pagination.getLimit(), pagination.getField(), pagination.getOrder());
+        return productMapper.mapToProductAllResponseList(products);
     }
 
     @Override
-    public ProductResponse getProductById(String id) {
-        return productRepository.findById(id)
-                .map(productMapper::mapToProductResponse)
+    public ProductByIdResponse getProductById(String id) {
+        ProductDocument product = categoryRepository.findProductById(id)
                 .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
+        return productMapper.mapToProductByIdResponse(product);
     }
 
     @Override
-    public void createProduct(ProductSaveRequest productSaveRequest) {
+    public ProductDocument createProduct(ProductSaveRequest productSaveRequest) {
         String categoryId = productSaveRequest.categoryId();
         CategoryDocument category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> ResourceNotFoundException.categoryNotFoundById(productSaveRequest.categoryId()));
-
+                .orElseThrow(() -> ResourceNotFoundException.categoryNotFoundById(categoryId));
         ProductDocument productDocument = productMapper.mapToProductDocument(productSaveRequest);
-        ProductDocument product = productRepository.save(productDocument);
-
-        category.getProducts().add(product);
+        category.getProducts().add(productDocument);
         categoryRepository.save(category);
+        return productDocument;
     }
 
     @Override
-    public void updateProduct(String id, ProductSaveRequest productSaveRequest) {
-        ProductDocument productDocument = productRepository.findById(id)
+    public ProductDocument updateProduct(String id, ProductSaveRequest productSaveRequest) {
+        String categoryId = productSaveRequest.categoryId();
+        CategoryDocument category = categoryRepository.findByProductId(id)
                 .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
+        ProductDocument productDocument = category.getProducts()
+                .stream()
+                .filter(product -> product.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
+
+        if(!category.getId().equals(categoryId)) {
+            category.getProducts().remove(productDocument);
+            productDocument = createProduct(productSaveRequest);
+        }
 
         productMapper.mapToProductDocument(productSaveRequest, productDocument);
 
-        productRepository.save(productDocument);
+        categoryRepository.save(category);
+        return productDocument;
     }
 
     @Override
     public void deleteProduct(String id) {
-        ProductDocument productDocument = productRepository.findById(id)
+        CategoryDocument category = categoryRepository.findByProductId(id)
                 .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
-
+        ProductDocument productDocument = category.getProducts()
+                .stream()
+                .filter(product -> product.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
         productDocument.setDeleted(true);
-
-        productRepository.save(productDocument);
+        categoryRepository.save(category);
     }
 }

@@ -3,12 +3,10 @@ package kz.edu.astanait.onlineshop.service.impl;
 import kz.edu.astanait.onlineshop.document.CategoryDocument;
 import kz.edu.astanait.onlineshop.domain.CategorySaveRequest;
 import kz.edu.astanait.onlineshop.domain.CategoryResponse;
-import kz.edu.astanait.onlineshop.exception.ResourceNotFoundException;
 import kz.edu.astanait.onlineshop.mapper.CategoryMapper;
-import kz.edu.astanait.onlineshop.mapper.ProductMapper;
 import kz.edu.astanait.onlineshop.repository.CategoryRepository;
-import kz.edu.astanait.onlineshop.repository.ProductRepository;
 import kz.edu.astanait.onlineshop.service.CategoryService;
+import kz.edu.astanait.onlineshop.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +18,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-    private final ProductRepository productRepository;
-    private final ProductMapper productMapper;
 
     @Override
     public List<CategoryResponse> getAllCategories() {
@@ -31,25 +27,23 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse getCategoryById(String id) {
-        return categoryRepository.findById(id)
-                .map(categoryMapper::mapToCategoryResponse)
-                .orElseThrow(() -> ResourceNotFoundException.categoryNotFoundById(id));
+        CategoryDocument categoryDocument = categoryRepository.findByIdOrElseThrow(id);
+        return categoryMapper.mapToCategoryResponse(categoryDocument);
     }
 
     @Override
-    public void createCategory(CategorySaveRequest categorySaveRequest) {
+    public CategoryResponse createCategory(CategorySaveRequest categorySaveRequest) {
         var category = categoryMapper.mapToCategoryDocument(categorySaveRequest);
-        categoryRepository.save(category);
+        CategoryDocument categoryDocument = categoryRepository.save(category);
+        return categoryMapper.mapToCategoryResponse(categoryDocument);
     }
 
     @Override
-    public void updateCategory(String id, CategorySaveRequest categorySaveRequest) {
-         CategoryDocument category = categoryRepository.findById(id)
-                 .orElseThrow(() -> ResourceNotFoundException.categoryNotFoundById(id));
-
+    public CategoryResponse updateCategory(String id, CategorySaveRequest categorySaveRequest) {
+         CategoryDocument category = categoryRepository.findByIdOrElseThrow(id);
          categoryMapper.mapToCategoryDocument(categorySaveRequest, category);
-
-         categoryRepository.save(category);
+         CategoryDocument categoryDocument = categoryRepository.save(category);
+         return categoryMapper.mapToCategoryResponse(categoryDocument);
     }
 
     @Override

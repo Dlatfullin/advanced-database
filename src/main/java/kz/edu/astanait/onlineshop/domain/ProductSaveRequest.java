@@ -1,5 +1,6 @@
 package kz.edu.astanait.onlineshop.domain;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -14,6 +15,9 @@ public record ProductSaveRequest(@NotNull(message = "Title cannot be null")
                                  @NotNull(message = "Price cannot be null")
                                  @PositiveOrZero(message = "Price must be zero or a positive value")
                                  BigDecimal price,
+                                 @DecimalMin(value = "3", message = "Quantity must be more than 2")
+                                 @NotNull(message = "Quantity must be more than 2")
+                                 BigDecimal quantity,
                                  @NotNull(message = "product can't exist with out category")
                                  String categoryId) {
 }

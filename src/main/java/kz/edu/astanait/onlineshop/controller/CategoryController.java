@@ -1,6 +1,7 @@
 package kz.edu.astanait.onlineshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kz.edu.astanait.onlineshop.domain.CategoryResponse;
 import kz.edu.astanait.onlineshop.domain.CategorySaveRequest;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Category")
 @Validated
 @RestController
 @RequestMapping("/v1/categories")
@@ -36,17 +38,17 @@ public class CategoryController {
 
     @Operation(summary = "Add new category")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> createCategory(@Valid @RequestBody CategorySaveRequest categorySaveRequest) {
-        categoryService.createCategory(categorySaveRequest);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategorySaveRequest categorySaveRequest) {
+        var category = categoryService.createCategory(categorySaveRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(category);
     }
 
     @Operation(summary = "Edit category by id")
-    @PatchMapping(value ="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> updateCategory(@PathVariable String id,
-        @Valid @RequestBody CategorySaveRequest categorySaveRequest) {
-        categoryService.updateCategory(id, categorySaveRequest);
-        return ResponseEntity.noContent().build();
+    @PutMapping(value ="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable String id,
+                                                           @Valid @RequestBody CategorySaveRequest categorySaveRequest) {
+        var category = categoryService.updateCategory(id, categorySaveRequest);
+        return ResponseEntity.ok(category);
     }
 
     @Operation(summary = "Delete category by id")
