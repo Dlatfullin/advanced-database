@@ -1,15 +1,17 @@
 package kz.edu.astanait.onlineshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kz.edu.astanait.onlineshop.document.ProductDocument;
-import kz.edu.astanait.onlineshop.domain.Pagination;
 import kz.edu.astanait.onlineshop.domain.ProductAllResponse;
 import kz.edu.astanait.onlineshop.domain.ProductByIdResponse;
 import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
 import kz.edu.astanait.onlineshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +30,10 @@ public class ProductController {
     private final ProductService productService;
 
     @Operation(summary = "Get all the products")
+    @PageableAsQueryParam
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ProductAllResponse> getAllProducts(Pagination pagination) {
-        return productService.getAllProducts(pagination);
+    public List<ProductAllResponse> getAllProducts(@Parameter(hidden = true) Pageable pageable) {
+        return productService.getAllProducts(pageable);
     }
 
     @Operation(summary = "Get product")
@@ -48,7 +51,8 @@ public class ProductController {
 
     @Operation(summary = "Edit product")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDocument> updateProduct(@PathVariable String id,@Valid @RequestBody ProductSaveRequest productSaveRequest) {
+    public ResponseEntity<ProductDocument> updateProduct(@PathVariable String id,
+                                                         @Valid @RequestBody ProductSaveRequest productSaveRequest) {
         var product = productService.updateProduct(id, productSaveRequest);
         return ResponseEntity.ok(product);
     }

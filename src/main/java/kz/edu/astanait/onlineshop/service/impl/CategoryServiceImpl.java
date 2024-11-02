@@ -6,7 +6,6 @@ import kz.edu.astanait.onlineshop.domain.CategoryResponse;
 import kz.edu.astanait.onlineshop.mapper.CategoryMapper;
 import kz.edu.astanait.onlineshop.repository.CategoryRepository;
 import kz.edu.astanait.onlineshop.service.CategoryService;
-import kz.edu.astanait.onlineshop.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

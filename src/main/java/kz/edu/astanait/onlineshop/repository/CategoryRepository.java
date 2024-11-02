@@ -3,6 +3,7 @@ package kz.edu.astanait.onlineshop.repository;
 import kz.edu.astanait.onlineshop.document.CategoryDocument;
 import kz.edu.astanait.onlineshop.document.ProductDocument;
 import kz.edu.astanait.onlineshop.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -20,11 +21,9 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
 
     @Aggregation(pipeline = {
             "{$unwind: '$products'}",
-            "{$sort: {'products.?1': ?2}}",
-            "{$limit: ?0}",
             "{$replaceRoot: {newRoot: '$products'}}"
-    })
-    List<ProductDocument> findAllProducts(int limit, String sortField, int sortDirection);
+    }, collation = "{ locale: 'en_US', numericOrdering: true }")
+    List<ProductDocument> findAllProducts(Pageable pageable);
 
     @Aggregation(pipeline = {
             "{$unwind: '$products'}",

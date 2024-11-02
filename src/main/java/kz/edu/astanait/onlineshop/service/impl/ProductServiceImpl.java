@@ -2,7 +2,6 @@ package kz.edu.astanait.onlineshop.service.impl;
 
 import kz.edu.astanait.onlineshop.document.CategoryDocument;
 import kz.edu.astanait.onlineshop.document.ProductDocument;
-import kz.edu.astanait.onlineshop.domain.Pagination;
 import kz.edu.astanait.onlineshop.domain.ProductAllResponse;
 import kz.edu.astanait.onlineshop.domain.ProductByIdResponse;
 import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
@@ -11,6 +10,7 @@ import kz.edu.astanait.onlineshop.mapper.ProductMapper;
 import kz.edu.astanait.onlineshop.repository.CategoryRepository;
 import kz.edu.astanait.onlineshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +23,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
 
     @Override
-    public List<ProductAllResponse> getAllProducts(Pagination pagination) {
-        List<ProductDocument> products = categoryRepository.findAllProducts(pagination.getLimit(), pagination.getField(), pagination.getOrder());
+    public List<ProductAllResponse> getAllProducts(Pageable pageable) {
+        List<ProductDocument> products = categoryRepository.findAllProducts(pageable);
         return productMapper.mapToProductAllResponseList(products);
     }
 
@@ -56,14 +56,11 @@ public class ProductServiceImpl implements ProductService {
                 .filter(product -> product.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
-
         if(!category.getId().equals(categoryId)) {
             category.getProducts().remove(productDocument);
             productDocument = createProduct(productSaveRequest);
         }
-
         productMapper.mapToProductDocument(productSaveRequest, productDocument);
-
         categoryRepository.save(category);
         return productDocument;
     }
