@@ -77,4 +77,10 @@ public class ProductServiceImpl implements ProductService {
         productDocument.setDeleted(true);
         categoryRepository.save(category);
     }
+
+    @Override
+    public List<ProductAllResponse> searchProducts(String text) {
+        List<ProductDocument> products = categoryRepository.findAllBy(text);
+        return productMapper.mapToProductAllResponseList(products);
+    }
 }

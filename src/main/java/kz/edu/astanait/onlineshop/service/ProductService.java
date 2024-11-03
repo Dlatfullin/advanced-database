@@ -19,4 +19,6 @@ public interface ProductService {
     ProductDocument updateProduct(String id, ProductSaveRequest productSaveRequest);
 
     void deleteProduct(String id);
+
+    List<ProductAllResponse> searchProducts(String text);
 }

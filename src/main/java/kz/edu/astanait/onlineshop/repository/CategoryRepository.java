@@ -34,4 +34,15 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
 
     @Query("{ 'products._id': ?0 }")
     Optional<CategoryDocument> findByProductId(String productId);
+
+    @Aggregation(pipeline = {
+            "{ $unwind: '$products' }",
+            "{ $match: { $or: [ " +
+                    "   { 'name': { $regex: ?0, $options: 'i' } }, " +
+                    "   { 'products.title': { $regex: ?0, $options: 'i' } }, " +
+                    "   { 'products.description': { $regex: ?0, $options: 'i' } } " +
+                    "] } }",
+            "{ $replaceRoot: { newRoot: '$products' } }"
+    })
+    List<ProductDocument> findAllBy(String search);
 }

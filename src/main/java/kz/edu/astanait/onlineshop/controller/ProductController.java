@@ -36,6 +36,11 @@ public class ProductController {
         return productService.getAllProducts(pageable);
     }
 
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ProductAllResponse> searchProducts(@RequestParam("query") String query) {
+        return productService.searchProducts(query);
+    }
+    
     @Operation(summary = "Get product")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ProductByIdResponse getProductById(@PathVariable String id) {
