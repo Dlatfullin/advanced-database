@@ -1,20 +1,26 @@
 package kz.edu.astanait.onlineshop.mapper;
 
+import kz.edu.astanait.onlineshop.document.CategoryDocument;
 import kz.edu.astanait.onlineshop.document.ProductDocument;
 import kz.edu.astanait.onlineshop.domain.ProductAllResponse;
 import kz.edu.astanait.onlineshop.domain.ProductByIdResponse;
 import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class ProductMapper {
 
-    public ProductByIdResponse mapToProductByIdResponse(final ProductDocument productDocument) {
-        return new ProductByIdResponse(productDocument.getId(),productDocument.getTitle(), productDocument.getDescription(),
-                productDocument.getPrice(), productDocument.getQuantity(), productDocument.isDeleted(), "/v1/products/" + productDocument.getId() + "/images");
+    private final CategoryMapper categoryMapper;
+
+    public ProductByIdResponse mapToProductByIdResponse(final ProductDocument productDocument, final CategoryDocument categoryDocument) {
+        return new ProductByIdResponse(productDocument.getId(), categoryMapper.mapToCategoryResponse(categoryDocument), productDocument.getTitle(),
+                productDocument.getDescription(), productDocument.getPrice(), productDocument.getQuantity(),
+                productDocument.isDeleted(), "/v1/products/" + productDocument.getId() + "/images");
     }
 
     public ProductAllResponse mapToProductAllResponse(final ProductDocument productDocument) {

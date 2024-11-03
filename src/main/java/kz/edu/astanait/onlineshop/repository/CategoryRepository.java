@@ -28,9 +28,10 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
     @Aggregation(pipeline = {
             "{$unwind: '$products'}",
             "{$match: {'products._id': ?0}}",
-            "{$replaceRoot: {newRoot: '$products'}}"
+            "{$replaceRoot: {newRoot: '$products'}}",
+            "{ $group: { _id: '$_id', name: { $first: '$name' }, products: { $push: '$products'}}}"
     })
-    Optional<ProductDocument> findProductById(String id);
+    Optional<CategoryDocument> findCategoryWithProductById(String productId);
 
     @Query("{ 'products._id': ?0 }")
     Optional<CategoryDocument> findByProductId(String productId);

@@ -5,6 +5,7 @@ import kz.edu.astanait.onlineshop.document.ProductDocument;
 import kz.edu.astanait.onlineshop.domain.ProductAllResponse;
 import kz.edu.astanait.onlineshop.domain.ProductByIdResponse;
 import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
+import kz.edu.astanait.onlineshop.exception.ProductDeletedException;
 import kz.edu.astanait.onlineshop.exception.ResourceNotFoundException;
 import kz.edu.astanait.onlineshop.mapper.ProductMapper;
 import kz.edu.astanait.onlineshop.repository.CategoryRepository;
@@ -24,15 +25,26 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductAllResponse> getAllProducts(Pageable pageable) {
-        List<ProductDocument> products = categoryRepository.findAllProducts(pageable);
+        List<ProductDocument> products = categoryRepository.findAllProducts(pageable)
+                .stream()
+                .filter(product -> !product.isDeleted())
+                .toList();
         return productMapper.mapToProductAllResponseList(products);
     }
 
     @Override
     public ProductByIdResponse getProductById(String id) {
-        ProductDocument product = categoryRepository.findProductById(id)
+        CategoryDocument category = categoryRepository.findByProductId(id)
                 .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
-        return productMapper.mapToProductByIdResponse(product);
+        ProductDocument productDocument = category.getProducts()
+                .stream()
+                .filter(product -> product.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
+        if(productDocument.isDeleted()) {
+            throw new ProductDeletedException("Product with id " + id + " has been deleted");
+        }
+        return productMapper.mapToProductByIdResponse(productDocument, category);
     }
 
     @Override
