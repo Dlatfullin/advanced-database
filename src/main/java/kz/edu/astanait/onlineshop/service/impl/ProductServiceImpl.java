@@ -59,22 +59,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDocument updateProduct(String id, ProductSaveRequest productSaveRequest) {
+    public ProductDocument updateProduct(String productId, ProductSaveRequest productSaveRequest) {
         String categoryId = productSaveRequest.categoryId();
-        CategoryDocument category = categoryRepository.findByProductId(id)
-                .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
-        ProductDocument productDocument = category.getProducts()
-                .stream()
-                .filter(product -> product.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
-        if(!category.getId().equals(categoryId)) {
-            category.getProducts().remove(productDocument);
-            productDocument = createProduct(productSaveRequest);
-        }
-        productMapper.mapToProductDocument(productSaveRequest, productDocument);
-        categoryRepository.save(category);
-        return productDocument;
+        categoryRepository.removeProductFromCategory(categoryId, productId);
+        categoryRepository.addProductToCategory(categoryId, productId,
+                productSaveRequest.title(),
+                productSaveRequest.description(),
+                productSaveRequest.price(),
+                productSaveRequest.quantity());
+        return categoryRepository.findProductById(productId)
+                .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(productId));
     }
 
     @Override
