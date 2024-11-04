@@ -25,14 +25,6 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
     }, collation = "{ locale: 'en_US', numericOrdering: true }")
     List<ProductDocument> findAllProducts(Pageable pageable);
 
-    @Aggregation(pipeline = {
-            "{$unwind: '$products'}",
-            "{$match: {'products._id': ?0}}",
-            "{$replaceRoot: {newRoot: '$products'}}",
-            "{ $group: { _id: '$_id', name: { $first: '$name' }, products: { $push: '$products'}}}"
-    })
-    Optional<CategoryDocument> findCategoryWithProductById(String productId);
-
     @Query("{ 'products._id': ?0 }")
     Optional<CategoryDocument> findByProductId(String productId);
 
