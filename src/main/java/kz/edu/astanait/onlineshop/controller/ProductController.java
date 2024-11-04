@@ -32,15 +32,13 @@ public class ProductController {
     @Operation(summary = "Get all the products")
     @PageableAsQueryParam
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ProductAllResponse> getAllProducts(@Parameter(hidden = true) Pageable pageable) {
-        return productService.getAllProducts(pageable);
+    public List<ProductAllResponse> searchProducts(@RequestParam(required = false) String query,
+                                                   @Parameter(hidden = true) Pageable pageable) {
+        return query == null
+                ? productService.searchProducts(pageable)
+                : productService.searchProducts(query, pageable);
     }
 
-    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ProductAllResponse> searchProducts(@RequestParam("query") String query) {
-        return productService.searchProducts(query);
-    }
-    
     @Operation(summary = "Get product")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ProductByIdResponse getProductById(@PathVariable String id) {
