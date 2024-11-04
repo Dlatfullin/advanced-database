@@ -23,6 +23,7 @@ public class UserDocument {
     private String password;
     private String fullName;
     private List<TokenDocument> tokens = new ArrayList<>();
+    private String role;
 
     public void addToken(final TokenDocument token) {
         if (token != null) {

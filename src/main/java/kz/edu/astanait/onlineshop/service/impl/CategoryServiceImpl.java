@@ -7,6 +7,7 @@ import kz.edu.astanait.onlineshop.mapper.CategoryMapper;
 import kz.edu.astanait.onlineshop.repository.CategoryRepository;
 import kz.edu.astanait.onlineshop.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.mapToCategoryResponse(categoryDocument);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public CategoryResponse createCategory(CategorySaveRequest categorySaveRequest) {
         var category = categoryMapper.mapToCategoryDocument(categorySaveRequest);
@@ -37,6 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.mapToCategoryResponse(categoryDocument);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public CategoryResponse updateCategory(String id, CategorySaveRequest categorySaveRequest) {
          CategoryDocument category = categoryRepository.findByIdOrElseThrow(id);
@@ -45,6 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
          return categoryMapper.mapToCategoryResponse(categoryDocument);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public void deleteCategory(String id) {
         categoryRepository.deleteById(id);

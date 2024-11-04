@@ -3,6 +3,7 @@ package kz.edu.astanait.onlineshop.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import java.util.Collections;
 
@@ -18,8 +19,9 @@ public class AuthenticatedUser extends User {
     public AuthenticatedUser(final String id,
                              final String fullName,
                              final String email,
-                             final String password) {
-        super(email, password, Collections.emptyList());
+                             final String password,
+                             final String role) {
+        super(email, password, Collections.singletonList(new SimpleGrantedAuthority(role)));
         this.id = id;
         this.fullName = fullName;
         this.email = email;
