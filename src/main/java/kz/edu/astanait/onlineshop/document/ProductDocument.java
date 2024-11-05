@@ -2,7 +2,7 @@ package kz.edu.astanait.onlineshop.document;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 
 import java.math.BigDecimal;
 
@@ -11,12 +11,13 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document("products")
 public class ProductDocument {
 
     @Id
     private String id;
+    @TextIndexed
     private String title;
+    @TextIndexed
     private String description;
     private BigDecimal price;
     private BigDecimal quantity;

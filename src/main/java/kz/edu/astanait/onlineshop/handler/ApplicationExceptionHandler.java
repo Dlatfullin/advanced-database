@@ -1,6 +1,7 @@
 package kz.edu.astanait.onlineshop.handler;
 
 import kz.edu.astanait.onlineshop.domain.ApiError;
+import kz.edu.astanait.onlineshop.exception.ProductDeletedException;
 import kz.edu.astanait.onlineshop.util.ValidationErrorUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,13 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
     public ResponseEntity<ApiError<String>> handleBadCredentialsException(final WebRequest request,
                                                                           final BadCredentialsException exception) {
         return handleThrowable(request, HttpStatus.UNAUTHORIZED, exception);
+    }
+
+    @ExceptionHandler(ProductDeletedException.class)
+    public ResponseEntity<ApiError<String>> handleProductDeletedException(
+            final WebRequest request,
+            final ProductDeletedException exception) {
+        return handleThrowable(request, HttpStatus.GONE, exception);
     }
 
     @ExceptionHandler(Exception.class)

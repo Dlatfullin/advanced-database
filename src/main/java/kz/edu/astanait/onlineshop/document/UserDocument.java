@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class UserDocument {
     private String email;
     private String password;
     private String fullName;
+    private BigDecimal balance;
     private List<TokenDocument> tokens = new ArrayList<>();
     private String role;
 

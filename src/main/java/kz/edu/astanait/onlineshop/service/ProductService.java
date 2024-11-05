@@ -10,7 +10,11 @@ import java.util.List;
 
 public interface ProductService {
 
-    List<ProductAllResponse> getAllProducts(Pageable pageable);
+    List<ProductAllResponse> searchProducts(Pageable pageable);
+
+    List<ProductAllResponse> searchProducts(String query, Pageable pageable);
+
+    ProductByIdResponse getProductById(String productId, String userId);
 
     ProductByIdResponse getProductById(String id);
 
@@ -19,4 +23,12 @@ public interface ProductService {
     ProductDocument updateProduct(String id, ProductSaveRequest productSaveRequest);
 
     void deleteProduct(String id);
+
+    void likeProduct(String productId, String userId);
+
+    List<ProductAllResponse> getLikedProducts(String userId, int page, int size);
+
+    List<ProductAllResponse> getViewedProducts(String userId, int page, int size);
+
+    List<ProductAllResponse> getRecommendedProducts(String userId, int size);
 }
