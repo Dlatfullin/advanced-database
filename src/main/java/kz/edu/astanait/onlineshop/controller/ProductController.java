@@ -44,8 +44,11 @@ public class ProductController {
     @Operation(summary = "Get all the products")
     @PageableAsQueryParam
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ProductAllResponse> getAllProducts(@Parameter(hidden = true) Pageable pageable) {
-        return productService.getAllProducts(pageable);
+    public List<ProductAllResponse> searchProducts(@RequestParam(required = false) String query,
+                                                   @Parameter(hidden = true) Pageable pageable) {
+        return query == null
+                ? productService.searchProducts(pageable)
+                : productService.searchProducts(query, pageable);
     }
 
     @Operation(summary = "Get product", security = @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME))

@@ -10,7 +10,9 @@ import java.util.List;
 
 public interface ProductService {
 
-    List<ProductAllResponse> getAllProducts(Pageable pageable);
+    List<ProductAllResponse> searchProducts(Pageable pageable);
+
+    List<ProductAllResponse> searchProducts(String query, Pageable pageable);
 
     ProductByIdResponse getProductById(String productId, String userId);
 

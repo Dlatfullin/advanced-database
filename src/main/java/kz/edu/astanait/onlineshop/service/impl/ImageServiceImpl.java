@@ -23,8 +23,8 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void uploadImage(String id, MultipartFile file) {
         try {
+            ImageDocument imageDocument = imageRepository.findByProductId(id).orElse(new ImageDocument());
             String imageBase64 = Base64.getEncoder().encodeToString(file.getBytes());
-            ImageDocument imageDocument = new ImageDocument();
             imageDocument.setImage(imageBase64);
             imageDocument.setProductId(id);
             imageRepository.save(imageDocument);

@@ -5,6 +5,7 @@ spring:
     mongodb:
       uri: mongodb://mongodb:mongodb@localhost:27017
       database: shop
+      auto-index-creation: true
     neo4j:
       database: neo4j
   neo4j:
@@ -26,9 +27,3 @@ logging:
           mongodb:
             core:
               MongoTemplate: DEBUG
-      neo4j:
-        ogm:
-          drivers:
-            bolt:
-              request:
-                BoltRequest: DEBUG
