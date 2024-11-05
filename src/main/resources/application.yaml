@@ -6,6 +6,13 @@ spring:
       uri: mongodb://mongodb:mongodb@localhost:27017
       database: shop
       auto-index-creation: true
+    neo4j:
+      database: neo4j
+  neo4j:
+    uri: bolt://localhost:7687
+    authentication:
+      username: neo4j
+      password: nurbolaitu
   security:
     token:
       expire-after: 30d

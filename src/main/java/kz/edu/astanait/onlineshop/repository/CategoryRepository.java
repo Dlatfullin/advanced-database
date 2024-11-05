@@ -3,7 +3,6 @@ package kz.edu.astanait.onlineshop.repository;
 import kz.edu.astanait.onlineshop.document.CategoryDocument;
 import kz.edu.astanait.onlineshop.document.ProductDocument;
 import kz.edu.astanait.onlineshop.domain.ProductByIdResponse;
-import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
 import kz.edu.astanait.onlineshop.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Aggregation;
@@ -81,4 +80,14 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
     @Query("{'products._id': ?0}")
     @Update("{'$set': {'products.$.deleted': true}}")
     void markProductAsDeleted(String productId);
+
+    @Query(value = "{ 'products._id': ?0 }", exists = true)
+    boolean existsProductById(String productId);
+
+    @Aggregation(pipeline = {
+            "{ $unwind: '$products' }",
+            "{ $match: { 'products._id': { $in: ?0 } } }",
+            "{ $replaceRoot: { newRoot: '$products' } }"
+    })
+    List<ProductDocument> findAllProductsByIds(Iterable<String> productIds);
 }
