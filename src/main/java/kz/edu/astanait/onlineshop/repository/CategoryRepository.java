@@ -70,12 +70,12 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
     Optional<ProductDocument> findProductById(String id);
 
     @Query("{'_id': ?0}")
-    @Update("{ '$pull': { 'products': ?1 } }")
-    void removeProductFromCategory(String categoryId, ProductDocument productDocument);
+    @Update("{ '$pull': { 'products': { '_id': ?1 } } }")
+    void removeProductFromCategory(String categoryId, String productId);
 
     @Query("{'_id': ?0 }")
-    @Update("{ '$push': { 'products': { '_id': ?1, 'title': ?2, 'description': ?3, 'price': ?4, 'quantity': ?5, 'deleted': false} } }")
-    void addProductToCategory(String categoryId, String productId, String title, String description, BigDecimal price, BigDecimal quantity);
+    @Update("{ '$push': { 'products': ?1 } }")
+    void addProductToCategory(String categoryId, ProductDocument product);
 
     @Query("{'products._id': ?0}")
     @Update("{'$set': {'products.$.deleted': true}}")

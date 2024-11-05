@@ -78,12 +78,8 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> ResourceNotFoundException.categoryNotFoundById(productId));
         if(productDocument.isDeleted())
             throw new ProductDeletedException("Product with id %s has been deleted".formatted(productId));
-        categoryRepository.removeProductFromCategory(categoryId, productDocument);
-        categoryRepository.addProductToCategory(categoryId, productId,
-                productSaveRequest.title(),
-                productSaveRequest.description(),
-                productSaveRequest.price(),
-                productSaveRequest.quantity());
+        categoryRepository.removeProductFromCategory(categoryId, productId);
+        categoryRepository.addProductToCategory(categoryId, productMapper.mapToUpdateProductDocument(productSaveRequest, productDocument));
         return categoryRepository.findProductById(productId)
                 .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(productId));
     }

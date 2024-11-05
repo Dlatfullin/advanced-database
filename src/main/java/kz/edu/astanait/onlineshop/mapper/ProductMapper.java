@@ -34,4 +34,11 @@ public class ProductMapper {
     public List<ProductAllResponse> mapToProductAllResponseList(final List<ProductDocument> productDocumentList) {
         return productDocumentList.stream().map(this::mapToProductAllResponse).toList();
     }
+
+    public ProductDocument mapToUpdateProductDocument(final ProductSaveRequest productSaveRequest, final ProductDocument productDocument ) {
+        productDocument.setTitle(productSaveRequest.title());
+        productDocument.setDescription(productSaveRequest.description());
+        productDocument.setPrice(productSaveRequest.price());
+        return productDocument;
+    }
 }
