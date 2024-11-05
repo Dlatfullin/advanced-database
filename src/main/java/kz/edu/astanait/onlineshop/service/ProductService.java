@@ -12,6 +12,8 @@ public interface ProductService {
 
     List<ProductAllResponse> getAllProducts(Pageable pageable);
 
+    ProductByIdResponse getProductById(String productId, String userId);
+
     ProductByIdResponse getProductById(String id);
 
     ProductDocument createProduct(ProductSaveRequest productSaveRequest);
@@ -19,4 +21,12 @@ public interface ProductService {
     ProductDocument updateProduct(String id, ProductSaveRequest productSaveRequest);
 
     void deleteProduct(String id);
+
+    void likeProduct(String productId, String userId);
+
+    List<ProductAllResponse> getLikedProducts(String userId, int page, int size);
+
+    List<ProductAllResponse> getViewedProducts(String userId, int page, int size);
+
+    List<ProductAllResponse> getRecommendedProducts(String userId, int size);
 }

@@ -34,4 +34,14 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
 
     @Query("{ 'products._id': ?0 }")
     Optional<CategoryDocument> findByProductId(String productId);
+
+    @Query(value = "{ 'products._id': ?0 }", exists = true)
+    boolean existsProductById(String productId);
+
+    @Aggregation(pipeline = {
+            "{ $unwind: '$products' }",
+            "{ $match: { 'products._id': { $in: ?0 } } }",
+            "{ $replaceRoot: { newRoot: '$products' } }"
+    })
+    List<ProductDocument> findAllProductsByIds(Iterable<String> productIds);
 }
