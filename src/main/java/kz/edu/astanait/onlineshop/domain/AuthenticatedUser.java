@@ -21,7 +21,8 @@ public class AuthenticatedUser extends User {
     public AuthenticatedUser(final String id,
                              final String fullName,
                              final String email,
-                             final String password, BigDecimal balance) {
+                             final String password,
+                             final BigDecimal balance) {
         super(email, password, Collections.emptyList());
         this.id = id;
         this.fullName = fullName;

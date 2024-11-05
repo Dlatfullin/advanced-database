@@ -34,17 +34,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductByIdResponse getProductById(String id) {
-        CategoryDocument category = categoryRepository.findByProductId(id)
+        ProductByIdResponse product = categoryRepository.findProductWithCategoryById(id)
                 .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
-        ProductDocument productDocument = category.getProducts()
-                .stream()
-                .filter(product -> product.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
-        if(productDocument.isDeleted()) {
-            throw new ProductDeletedException("Product with id " + id + " has been deleted");
+        if(product.deleted()) {
+            throw new ProductDeletedException("Product with id %s has been deleted".formatted(id));
         }
-        return productMapper.mapToProductByIdResponse(productDocument, category);
+        return product;
     }
 
     @Override
@@ -61,7 +56,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDocument updateProduct(String productId, ProductSaveRequest productSaveRequest) {
         String categoryId = productSaveRequest.categoryId();
-        categoryRepository.removeProductFromCategory(categoryId, productId);
+        ProductDocument productDocument = categoryRepository.findProductById(productId)
+                .orElseThrow(() -> ResourceNotFoundException.categoryNotFoundById(productId));
+        if(productDocument.isDeleted())
+            throw new ProductDeletedException("Product with id %s has been deleted".formatted(productId));
+        categoryRepository.removeProductFromCategory(categoryId, productDocument);
         categoryRepository.addProductToCategory(categoryId, productId,
                 productSaveRequest.title(),
                 productSaveRequest.description(),
@@ -72,16 +71,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(String id) {
-        CategoryDocument category = categoryRepository.findByProductId(id)
-                .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
-        ProductDocument productDocument = category.getProducts()
-                .stream()
-                .filter(product -> product.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
-        productDocument.setDeleted(true);
-        categoryRepository.save(category);
+    public void deleteProduct(String productId) {
+        categoryRepository.markProductAsDeleted(productId);
     }
 
     @Override
