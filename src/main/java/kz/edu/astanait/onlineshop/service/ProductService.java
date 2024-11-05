@@ -10,7 +10,9 @@ import java.util.List;
 
 public interface ProductService {
 
-    List<ProductAllResponse> getAllProducts(Pageable pageable);
+    List<ProductAllResponse> searchProducts(Pageable pageable);
+
+    List<ProductAllResponse> searchProducts(String query, Pageable pageable);
 
     ProductByIdResponse getProductById(String id);
 
@@ -19,6 +21,4 @@ public interface ProductService {
     ProductDocument updateProduct(String id, ProductSaveRequest productSaveRequest);
 
     void deleteProduct(String id);
-
-    List<ProductAllResponse> searchProducts(String text);
 }

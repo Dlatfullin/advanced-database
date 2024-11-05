@@ -3,6 +3,7 @@ package kz.edu.astanait.onlineshop.repository;
 import kz.edu.astanait.onlineshop.document.CategoryDocument;
 import kz.edu.astanait.onlineshop.document.ProductDocument;
 import kz.edu.astanait.onlineshop.domain.ProductByIdResponse;
+import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
 import kz.edu.astanait.onlineshop.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Aggregation;
@@ -23,8 +24,24 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
     }
 
     @Aggregation(pipeline = {
-            "{$unwind: '$products'}",
-            "{$replaceRoot: {newRoot: '$products'}}"
+            "{ $match:  { $text: { $search: ?0 } } }",
+            "{ $unwind: '$products' }",
+            "{ $replaceRoot: { newRoot: '$products'} }",
+            "{ $match: { 'deleted': false } }",
+            """
+             { $match: { $or: [
+                    { 'title': { $regex: '.?0.', $options: 'i' } },
+                    { 'description': { $regex: '.?0.', $options: 'i' } }
+             ] } }
+             """,
+            "{ $sort: { score: { $meta: 'textScore' } } }"
+    }, collation = "{ locale: 'en_US', numericOrdering: true }")
+    List<ProductDocument> findAllProducts(String query, Pageable pageable);
+
+    @Aggregation(pipeline = {
+            "{ $unwind: '$products' }",
+            "{ $replaceRoot: { newRoot: '$products'} }",
+            "{ $match: { 'deleted': false } }",
     }, collation = "{ locale: 'en_US', numericOrdering: true }")
     List<ProductDocument> findAllProducts(Pageable pageable);
 
@@ -44,17 +61,6 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
                     + "}}"
     })
     Optional<ProductByIdResponse> findProductWithCategoryById(String productId);
-
-    @Aggregation(pipeline = {
-            "{ $unwind: '$products' }",
-            "{ $match: { $or: [ " +
-                    "   { 'name': { $regex: ?0, $options: 'i' } }, " +
-                    "   { 'products.title': { $regex: ?0, $options: 'i' } }, " +
-                    "   { 'products.description': { $regex: ?0, $options: 'i' } } " +
-                    "] } }",
-            "{ $replaceRoot: { newRoot: '$products' } }"
-    })
-    List<ProductDocument> findAllBy(String search);
 
     @Aggregation(pipeline = {
             "{$unwind: '$products'}",

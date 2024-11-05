@@ -24,11 +24,14 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
 
     @Override
-    public List<ProductAllResponse> getAllProducts(Pageable pageable) {
-        List<ProductDocument> products = categoryRepository.findAllProducts(pageable)
-                .stream()
-                .filter(product -> !product.isDeleted())
-                .toList();
+    public List<ProductAllResponse> searchProducts(Pageable pageable) {
+        List<ProductDocument> products = categoryRepository.findAllProducts(pageable);
+        return productMapper.mapToProductAllResponseList(products);
+    }
+
+    @Override
+    public List<ProductAllResponse> searchProducts(String query, Pageable pageable) {
+        List<ProductDocument> products = categoryRepository.findAllProducts(query, pageable);
         return productMapper.mapToProductAllResponseList(products);
     }
 
@@ -73,11 +76,5 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(String productId) {
         categoryRepository.markProductAsDeleted(productId);
-    }
-
-    @Override
-    public List<ProductAllResponse> searchProducts(String text) {
-        List<ProductDocument> products = categoryRepository.findAllBy(text);
-        return productMapper.mapToProductAllResponseList(products);
     }
 }
