@@ -5,6 +5,7 @@ spring:
     mongodb:
       uri: mongodb://mongodb:mongodb@localhost:27017
       database: shop
+      auto-index-creation: true
   security:
     token:
       expire-after: 30d
