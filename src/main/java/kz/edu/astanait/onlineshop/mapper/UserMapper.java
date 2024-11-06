@@ -18,6 +18,7 @@ public class UserMapper {
         user.setEmail(registrationRequest.email());
         user.setBalance(BigDecimal.ZERO);
         user.setPassword(hashedPassword);
+        user.setRole("ROLE_USER");
         return user;
     }
 
@@ -31,6 +32,6 @@ public class UserMapper {
 
     public AuthenticatedUser mapToAuthenticatedUser(final UserDocument userDocument) {
         return new AuthenticatedUser(userDocument.getId(), userDocument.getFullName(), userDocument.getEmail(), userDocument.getPassword(),
-                userDocument.getBalance());
+                userDocument.getBalance(), userDocument.getRole());
     }
 }

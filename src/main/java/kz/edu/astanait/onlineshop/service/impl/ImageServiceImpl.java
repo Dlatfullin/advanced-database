@@ -6,6 +6,7 @@ import kz.edu.astanait.onlineshop.repository.ImageRepository;
 import kz.edu.astanait.onlineshop.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,7 @@ public class ImageServiceImpl implements ImageService {
     @Value("${spring.images.default}")
     private String defaultImage;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public void uploadImage(String id, MultipartFile file) {
         try {

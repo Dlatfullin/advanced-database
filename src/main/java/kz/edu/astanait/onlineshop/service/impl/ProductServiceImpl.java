@@ -14,6 +14,7 @@ import kz.edu.astanait.onlineshop.repository.CategoryRepository;
 import kz.edu.astanait.onlineshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +61,7 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public ProductDocument createProduct(ProductSaveRequest productSaveRequest) {
         String categoryId = productSaveRequest.categoryId();
@@ -71,6 +73,7 @@ public class ProductServiceImpl implements ProductService {
         return productDocument;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public ProductDocument updateProduct(String productId, ProductSaveRequest productSaveRequest) {
         String categoryId = productSaveRequest.categoryId();
@@ -84,6 +87,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(productId));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public void deleteProduct(String productId) {
         categoryRepository.markProductAsDeleted(productId);
