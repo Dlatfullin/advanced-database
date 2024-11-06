@@ -43,19 +43,17 @@ public class PurchaseServiceImpl implements PurchaseService {
                 .findFirst()
                 .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(productId));
         BigDecimal totalCost = productDocument.getPrice().multiply(amount);
-        if(user.getBalance().compareTo(totalCost) >= 0) {
-            if(productDocument.getQuantity().compareTo(amount) >= 0) {
-                user.setBalance(user.getBalance().subtract(totalCost));
-                productDocument.setQuantity(productDocument.getQuantity().subtract(amount));
-                PurchaseDocument purchaseDocument = purchaseMapper.mapToPurchaseDocument(productDocument, amount);
-                user.getPurchases().add(purchaseDocument);
-                userRepository.save(user);
-                categoryRepository.save(category);
-            } else {
-               throw new InsufficientProductQuantityException("Requested quantity exceeds available stock for product ID: %s".formatted(productId));
-            }
-        } else {
+        if(user.getBalance().compareTo(totalCost) < 0) {
             throw new InsufficientFundsException("There are not enough funds to perform the operation.");
         }
+        if(productDocument.getQuantity().compareTo(amount) < 0) {
+            throw new InsufficientProductQuantityException("Requested quantity exceeds available stock for product ID: %s".formatted(productId));
+        }
+        user.setBalance(user.getBalance().subtract(totalCost));
+        productDocument.setQuantity(productDocument.getQuantity().subtract(amount));
+        PurchaseDocument purchaseDocument = purchaseMapper.mapToPurchaseDocument(productDocument, amount);
+        user.getPurchases().add(purchaseDocument);
+        userRepository.save(user);
+        categoryRepository.save(category);
     }
 }
