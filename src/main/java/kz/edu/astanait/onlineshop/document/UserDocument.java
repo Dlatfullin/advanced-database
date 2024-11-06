@@ -25,6 +25,7 @@ public class UserDocument {
     private String fullName;
     private BigDecimal balance;
     private List<TokenDocument> tokens = new ArrayList<>();
+    private List<PurchaseDocument> purchases = new ArrayList<>();
 
     public void addToken(final TokenDocument token) {
         if (token != null) {
