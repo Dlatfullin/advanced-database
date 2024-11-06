@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,4 +89,11 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
             "{ $replaceRoot: { newRoot: '$products' } }"
     })
     List<ProductDocument> findAllProductsByIds(Iterable<String> productIds);
+
+    @Aggregation(pipeline = {
+            "{ '$unwind': '$products' }",
+            "{ '$match': { 'products.id': ?0 } }",
+            "{ '$group': { '_id': '$_id', 'name': { '$first': '$name' }, 'products': { '$push': '$products' } } }"
+    })
+    Optional<CategoryDocument> findByProductId(String productId);
 }
