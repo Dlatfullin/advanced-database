@@ -52,7 +52,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Get product", security = @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME))
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ProductByIdResponse getProductById(@PathVariable String id,
                                               @AuthenticationPrincipal AuthenticatedUser user) {
         return user == null
@@ -60,22 +60,22 @@ public class ProductController {
                 : productService.getProductById(id, user.getId());
     }
 
-    @Operation(summary = "Create product")
+    @Operation(summary = "Create product", security = @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME))
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductDocument> createProduct(@Valid @RequestBody ProductSaveRequest productSaveRequest) {
         var product = productService.createProduct(productSaveRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
-    @Operation(summary = "Edit product")
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Edit product", security = @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME))
+    @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductDocument> updateProduct(@PathVariable String id,
                                                          @Valid @RequestBody ProductSaveRequest productSaveRequest) {
         var product = productService.updateProduct(id, productSaveRequest);
         return ResponseEntity.ok(product);
     }
 
-    @Operation(summary = "Mark product as deleted")
+    @Operation(summary = "Mark product as deleted", security = @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME))
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
         productService.deleteProduct(id);
@@ -91,7 +91,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Get liked products", security = @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME))
-    @GetMapping("/likes")
+    @GetMapping(path ="/likes", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ProductAllResponse> getLikedProducts(@RequestParam int page,
                                                      @RequestParam int size,
                                                      @AuthenticationPrincipal AuthenticatedUser user) {
@@ -99,7 +99,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Get viewed products", security = @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME))
-    @GetMapping("/views")
+    @GetMapping(path = "/views", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ProductAllResponse> getViewedProducts(@RequestParam int page,
                                                       @RequestParam int size,
                                                       @AuthenticationPrincipal AuthenticatedUser user) {
@@ -107,7 +107,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Get recommended products", security = @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME))
-    @GetMapping("/recommendations")
+    @GetMapping(path ="/recommendations", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ProductAllResponse> getRecommendedProducts(@RequestParam int size,
                                                            @AuthenticationPrincipal AuthenticatedUser user) {
         return productService.getRecommendedProducts(user.getId(), size);
