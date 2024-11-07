@@ -1,8 +1,8 @@
 package kz.edu.astanait.onlineshop.repository;
 
 import kz.edu.astanait.onlineshop.document.CategoryDocument;
+import kz.edu.astanait.onlineshop.document.CategoryProductAggregate;
 import kz.edu.astanait.onlineshop.document.ProductDocument;
-import kz.edu.astanait.onlineshop.domain.ProductByIdResponse;
 import kz.edu.astanait.onlineshop.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Aggregation;
@@ -62,11 +62,11 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
                     + "price: '$products.price', "
                     + "quantity: '$products.quantity', "
                     + "deleted: '$products.deleted', "
-                    + "imageUrl: { $concat: ['/v1/products/', { $toString: '$products._id' }, '/images'] }, "
-                    + "category: { '_id': '$_id', 'name': '$name' }"
+                    + "categoryId: '$_id', "
+                    + "name: '$name' "
                     + "}}"
     })
-    Optional<ProductByIdResponse> findProductWithCategoryById(String productId);
+    Optional<CategoryProductAggregate> findProductWithCategoryById(String productId);
 
     @Aggregation(pipeline = {
             "{$unwind: '$products'}",
