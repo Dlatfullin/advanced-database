@@ -28,6 +28,8 @@ public interface ProductService {
 
     void likeProduct(String productId, String userId);
 
+    void unlikeProduct(String productId, String userId);
+
     List<ProductAllResponse> getLikedProducts(String userId, int page, int size);
 
     List<ProductAllResponse> getViewedProducts(String userId, int page, int size);

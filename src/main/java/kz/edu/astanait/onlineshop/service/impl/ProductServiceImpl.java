@@ -110,6 +110,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public void unlikeProduct(String productId, String userId) {
+        if (!categoryRepository.existsProductById(productId)) {
+            throw ResourceNotFoundException.productNotFoundById(productId);
+        }
+        if (productNodeRepository.getLikeRelationship(userId, productId).isPresent()) {
+            productNodeRepository.unlikeProduct(userId, productId);
+        }
+    }
+
+    @Override
     @Transactional
     public List<ProductAllResponse> getLikedProducts(String userId, int page, int size) {
         long skip = (long) page * size;

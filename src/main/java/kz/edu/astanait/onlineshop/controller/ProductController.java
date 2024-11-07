@@ -90,6 +90,14 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Unlike a product", security = @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME))
+    @DeleteMapping("/{id}/likes")
+    public ResponseEntity<Void> unlikeProduct(@PathVariable String id,
+                                              @AuthenticationPrincipal AuthenticatedUser user) {
+        productService.unlikeProduct(id, user.getId());
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "Get liked products", security = @SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME))
     @GetMapping(path ="/likes", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ProductAllResponse> getLikedProducts(@RequestParam int page,
