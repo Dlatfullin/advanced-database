@@ -43,6 +43,14 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
     }, collation = "{ locale: 'en_US', numericOrdering: true }")
     List<ProductDocument> findAllProducts(Pageable pageable);
 
+    @Query("{'_id': ?0}")
+    @Aggregation(pipeline = {
+            "{ $unwind: '$products' }",
+            "{ $replaceRoot: { newRoot: '$products' } }",
+            "{ $match: { 'deleted': false } }"
+    }, collation = "{ locale: 'en_US', numericOrdering: true }")
+    List<ProductDocument> findProductsByCategoryId(String categoryId, Pageable pageable);
+
     @Aggregation(pipeline = {
             "{$match: {'products._id': ?0}}",
             "{$unwind: '$products'}",

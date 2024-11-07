@@ -43,6 +43,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductAllResponse> getProductsByCategory(String categoryId, Pageable pageable) {
+        List<ProductDocument> products = categoryRepository.findProductsByCategoryId(categoryId, pageable);
+        return productMapper.mapToProductAllResponseList(products);
+    }
+
+    @Override
     public ProductByIdResponse getProductById(String productId, String userId) {
         ProductByIdResponse response = getProductById(productId);
         if (productNodeRepository.getViewRelationship(userId, productId).isEmpty()) {
