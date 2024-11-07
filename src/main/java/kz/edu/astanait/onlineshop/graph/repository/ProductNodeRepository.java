@@ -65,9 +65,15 @@ public interface ProductNodeRepository extends Neo4jRepository<ProductNode, Stri
     List<ProductNode> getLikedProductsByUser(String userId, long skip, int limit);
 
     @Query("""
-        MATCH (u1:User {id: $userId })-[r1:LIKED]->(p:Product)<-[r2:LIKED]-(u2:User)-[r3:LIKED]->(product:Product)
-        LIMIT $limit
+        MATCH (u:User {userId: $userId})-[:LIKED]->(p:Product)
+        WITH COLLECT(p) AS likedProducts
+        CALL gds.pageRank.stream('userProductGraph')
+        YIELD nodeId, score
+        WITH gds.util.asNode(nodeId) AS product, score, likedProducts
+        WHERE product:Product AND NOT product IN likedProducts
         RETURN product
+        ORDER BY score DESC
+        LIMIT $limit;
         """)
     List<ProductNode> getRecommendedProductsForUser(String userId, int limit);
 }
