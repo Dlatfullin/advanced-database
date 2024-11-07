@@ -1,5 +1,6 @@
 package kz.edu.astanait.onlineshop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -16,7 +17,8 @@ public record ProductByIdResponse(String id,
                                   int likes,
                                   boolean liked) {
 
-    public ProductByIdResponse getResponseAsLiked() {
+    @JsonIgnore
+    public ProductByIdResponse asLiked() {
         return new ProductByIdResponse(id, category, title, description, price, quantity, deleted, imageUrl, likes, true);
     }
 }

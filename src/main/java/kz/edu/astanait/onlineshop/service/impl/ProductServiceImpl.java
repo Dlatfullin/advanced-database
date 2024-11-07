@@ -56,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
             productNodeRepository.viewProduct(userId, productId);
         }
         return productNodeRepository.getLikeRelationship(userId, productId)
-                                    .map(relationship -> response.getResponseAsLiked())
+                                    .map(relationship -> response.asLiked())
                                     .orElse(response);
     }
 

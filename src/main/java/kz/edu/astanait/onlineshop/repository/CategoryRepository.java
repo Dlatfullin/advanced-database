@@ -63,7 +63,7 @@ public interface CategoryRepository extends MongoRepository<CategoryDocument, St
                     + "quantity: '$products.quantity', "
                     + "deleted: '$products.deleted', "
                     + "categoryId: '$_id', "
-                    + "name: '$name' "
+                    + "categoryName: '$name'"
                     + "}}"
     })
     Optional<CategoryProductAggregate> findProductWithCategoryById(String productId);
