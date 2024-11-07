@@ -1,6 +1,7 @@
 package kz.edu.astanait.onlineshop.service.impl;
 
 import kz.edu.astanait.onlineshop.document.CategoryDocument;
+import kz.edu.astanait.onlineshop.document.CategoryProductAggregate;
 import kz.edu.astanait.onlineshop.document.ProductDocument;
 import kz.edu.astanait.onlineshop.domain.ProductAllResponse;
 import kz.edu.astanait.onlineshop.domain.ProductByIdResponse;
@@ -54,17 +55,21 @@ public class ProductServiceImpl implements ProductService {
         if (productNodeRepository.getViewRelationship(userId, productId).isEmpty()) {
             productNodeRepository.viewProduct(userId, productId);
         }
-        return response;
+        return productNodeRepository.getLikeRelationship(userId, productId)
+                                    .map(relationship -> response.getResponseAsLiked())
+                                    .orElse(response);
     }
 
     @Override
     public ProductByIdResponse getProductById(String id) {
-        ProductByIdResponse product = categoryRepository.findProductWithCategoryById(id)
-                .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
-        if(product.deleted()) {
+        CategoryProductAggregate categoryProduct
+                = categoryRepository.findProductWithCategoryById(id)
+                                    .orElseThrow(() -> ResourceNotFoundException.productNotFoundById(id));
+        if (categoryProduct.deleted()) {
             throw new ProductDeletedException("Product with id %s has been deleted".formatted(id));
         }
-        return product;
+        int likes = productNodeRepository.countProductLikes(id);
+        return productMapper.mapToProductByIdResponse(categoryProduct, likes);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -106,6 +111,16 @@ public class ProductServiceImpl implements ProductService {
         }
         if (productNodeRepository.getLikeRelationship(userId, productId).isEmpty()) {
             productNodeRepository.likeProduct(userId, productId);
+        }
+    }
+
+    @Override
+    public void unlikeProduct(String productId, String userId) {
+        if (!categoryRepository.existsProductById(productId)) {
+            throw ResourceNotFoundException.productNotFoundById(productId);
+        }
+        if (productNodeRepository.getLikeRelationship(userId, productId).isPresent()) {
+            productNodeRepository.unlikeProduct(userId, productId);
         }
     }
 

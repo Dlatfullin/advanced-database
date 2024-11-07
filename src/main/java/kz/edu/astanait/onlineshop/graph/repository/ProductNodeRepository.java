@@ -18,6 +18,18 @@ public interface ProductNodeRepository extends Neo4jRepository<ProductNode, Stri
     void likeProduct(String userId, String productId);
 
     @Query("""
+        MATCH (user:User {id: $userId })-[r:LIKED]->(product:Product {id: $productId})
+        DELETE r
+        """)
+    void unlikeProduct(String userId, String productId);
+
+    @Query("""
+        MATCH (user:User)-[r:LIKED]->(product:Product {id: $productId})
+        RETURN COUNT(r)
+        """)
+    int countProductLikes(String productId);
+
+    @Query("""
         MERGE (user:User {id: $userId })
         MERGE (product:Product {id: $productId})
         MERGE (user)-[r:VIEWED {createdAt: datetime()}]->(product)
@@ -27,18 +39,18 @@ public interface ProductNodeRepository extends Neo4jRepository<ProductNode, Stri
     @Query(value = """
         MATCH (user:User {id: $userId })-[r:VIEWED]->(product:Product {id: $productId})
         RETURN r
-        """, exists = true)
+        """)
     Optional<Relationship> getViewRelationship(String userId, String productId);
 
     @Query(value = """
         MATCH (user:User {id: $userId })-[r:LIKED]->(product:Product {id: $productId})
         RETURN r
-        """, exists = true)
+        """)
     Optional<Relationship> getLikeRelationship(String userId, String productId);
 
     @Query("""
         MATCH (user:User {id: $userId })-[r:VIEWED]->(product:Product)
-        ORDER BY r.createdAt
+        ORDER BY r.createdAt DESC
         SKIP $skip LIMIT $limit
         RETURN product
         """)
@@ -46,7 +58,7 @@ public interface ProductNodeRepository extends Neo4jRepository<ProductNode, Stri
 
     @Query("""
         MATCH (user:User {id: $userId })-[r:LIKED]->(product:Product)
-        ORDER BY r.createdAt
+        ORDER BY r.createdAt DESC
         SKIP $skip LIMIT $limit
         RETURN product
         """)

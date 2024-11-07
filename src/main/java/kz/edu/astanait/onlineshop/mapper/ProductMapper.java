@@ -1,7 +1,10 @@
 package kz.edu.astanait.onlineshop.mapper;
 
+import kz.edu.astanait.onlineshop.document.CategoryProductAggregate;
 import kz.edu.astanait.onlineshop.document.ProductDocument;
+import kz.edu.astanait.onlineshop.domain.CategoryResponse;
 import kz.edu.astanait.onlineshop.domain.ProductAllResponse;
+import kz.edu.astanait.onlineshop.domain.ProductByIdResponse;
 import kz.edu.astanait.onlineshop.domain.ProductSaveRequest;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
@@ -12,8 +15,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ProductMapper {
-
-    private final CategoryMapper categoryMapper;
 
     public ProductAllResponse mapToProductAllResponse(final ProductDocument productDocument) {
         return new ProductAllResponse(productDocument.getId(), productDocument.getTitle(), productDocument.getPrice(),
@@ -40,5 +41,21 @@ public class ProductMapper {
         productDocument.setDescription(productSaveRequest.description());
         productDocument.setPrice(productSaveRequest.price());
         return productDocument;
+    }
+
+    public ProductByIdResponse mapToProductByIdResponse(final CategoryProductAggregate aggregate, final int likes) {
+        CategoryResponse category = new CategoryResponse(aggregate.categoryId(), aggregate.categoryName());
+        return new ProductByIdResponse(
+                aggregate.id(),
+                category,
+                aggregate.title(),
+                aggregate.description(),
+                aggregate.price(),
+                aggregate.quantity(),
+                aggregate.deleted(),
+                aggregate.imageUrl(),
+                likes,
+                false
+        );
     }
 }
